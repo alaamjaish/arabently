@@ -88,12 +88,10 @@ export default function QuizPage({ params }: QuizPageProps) {
     setQuizCompleted(false)
   }
 
-  // Calculate score - THIS HAS A BUG! 🐛
+  // Calculate score
   const correctAnswers = answers.filter(a => a.isCorrect).length
   const totalQuestions = quizQuestions.length
-  
-  // BUG: Using wrong formula - this calculates wrong answers percentage instead of correct!
-  const scorePercentage = ((totalQuestions - correctAnswers) / totalQuestions) * 100
+  const scorePercentage = (correctAnswers / totalQuestions) * 100
 
   if (quizCompleted) {
     return (
@@ -199,10 +197,10 @@ export default function QuizPage({ params }: QuizPageProps) {
             Back to Course
           </Link>
           
-          {/* Progress indicator */}
+          {/* Progress indicator - BUG: hardcoded to 1 instead of currentQuestion + 1 🐛 */}
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
-              {currentQuestion + 1} / {quizQuestions.length}
+              {1} / {quizQuestions.length}
             </span>
           </div>
         </div>
