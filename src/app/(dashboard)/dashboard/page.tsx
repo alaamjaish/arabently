@@ -27,53 +27,40 @@ export default function DashboardPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name')
-        .eq('id', user.id)
-        .single()
+      // Parallel fetch: profile and courses at the same time
+      const [profileResult, coursesResult] = await Promise.all([
+        supabase.from('profiles').select('full_name').eq('id', user.id).single(),
+        supabase.from('courses').select('*').eq('is_published', true)
+      ])
 
-      setUserName(profile?.full_name || 'Learner')
+      setUserName(profileResult.data?.full_name || 'Learner')
+      const coursesData = coursesResult.data || []
+      setCourses(coursesData)
 
-      const { data: coursesData } = await supabase
-        .from('courses')
-        .select('*')
-        .eq('is_published', true)
-
-      setCourses(coursesData || [])
-
-      if (!coursesData || coursesData.length === 0) {
+      if (coursesData.length === 0) {
         setLoading(false)
         return
       }
 
       const course = coursesData[0]
 
-      let { data: progress } = await supabase
-        .from('student_progress')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('course_id', course.id)
-        .single()
+      // Parallel fetch: progress and total steps
+      const [progressResult, stepsCountResult] = await Promise.all([
+        supabase.from('student_progress').select('*').eq('user_id', user.id).eq('course_id', course.id).single(),
+        supabase.from('roadmap_steps').select('*', { count: 'exact', head: true }).eq('course_id', course.id)
+      ])
+
+      let progress = progressResult.data
+      const totalSteps = stepsCountResult.count || 0
 
       if (!progress) {
         const { data: newProgress } = await supabase
           .from('student_progress')
-          .insert({
-            user_id: user.id,
-            course_id: course.id,
-            current_step: 1,
-            completed_steps: [],
-          })
+          .insert({ user_id: user.id, course_id: course.id, current_step: 1, completed_steps: [] })
           .select()
           .single()
         progress = newProgress
       }
-
-      const { count: totalSteps } = await supabase
-        .from('roadmap_steps')
-        .select('*', { count: 'exact', head: true })
-        .eq('course_id', course.id)
 
       const { data: step } = await supabase
         .from('roadmap_steps')
@@ -87,34 +74,19 @@ export default function DashboardPage() {
         return
       }
 
-      let lesson = null
-      let script = null
-
-      if (step.lesson_id) {
-        const { data: lessonData } = await supabase
-          .from('lessons')
-          .select('*')
-          .eq('id', step.lesson_id)
-          .single()
-        lesson = lessonData
-      }
-
-      if (step.script_id) {
-        const { data: scriptData } = await supabase
-          .from('scripts')
-          .select('*')
-          .eq('id', step.script_id)
-          .single()
-        script = scriptData
-      }
+      // Parallel fetch: lesson and script if both exist
+      const [lessonResult, scriptResult] = await Promise.all([
+        step.lesson_id ? supabase.from('lessons').select('*').eq('id', step.lesson_id).single() : Promise.resolve({ data: null }),
+        step.script_id ? supabase.from('scripts').select('*').eq('id', step.script_id).single() : Promise.resolve({ data: null })
+      ])
 
       setNextStep({
         step,
-        lesson: lesson || undefined,
-        script: script || undefined,
+        lesson: lessonResult.data || undefined,
+        script: scriptResult.data || undefined,
         progress,
         course,
-        totalSteps: totalSteps || 0,
+        totalSteps,
       })
 
       setLoading(false)

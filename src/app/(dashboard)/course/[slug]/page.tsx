@@ -26,50 +26,51 @@ export default function CoursePage() {
     const fetchData = async () => {
       const supabase = createClient()
 
-      const { data: { user } } = await supabase.auth.getUser()
+      // Parallel fetch: user and course
+      const [userResult, courseResult] = await Promise.all([
+        supabase.auth.getUser(),
+        supabase.from('courses').select('*').eq('slug', slug).single()
+      ])
 
-      const { data: courseData } = await supabase
-        .from('courses')
-        .select('*')
-        .eq('slug', slug)
-        .single()
+      const user = userResult.data?.user
+      const courseData = courseResult.data
 
       if (!courseData) {
         setLoading(false)
         return
       }
 
-      const { data: unitsData } = await supabase
-        .from('units')
-        .select('*')
-        .eq('course_id', courseData.id)
-        .order('unit_number')
+      // First get units
+      const unitsResult = await supabase.from('units').select('*').eq('course_id', courseData.id).order('unit_number')
+      const units = unitsResult.data || []
+      const unitIds = units.map(u => u.id)
 
-      const unitsWithLessons = await Promise.all(
-        (unitsData || []).map(async (unit) => {
-          const { data: lessons } = await supabase
-            .from('lessons')
-            .select('*')
-            .eq('unit_id', unit.id)
-            .order('lesson_number')
-          return { ...unit, lessons: lessons || [] }
-        })
-      )
+      // Parallel fetch: all lessons for all units, and progress
+      const [lessonsResult, progressResult] = await Promise.all([
+        unitIds.length > 0 
+          ? supabase.from('lessons').select('*').in('unit_id', unitIds).order('lesson_number')
+          : Promise.resolve({ data: [] }),
+        user ? supabase.from('student_progress').select('*').eq('user_id', user.id).eq('course_id', courseData.id).single() : Promise.resolve({ data: null })
+      ])
+
+      // Group lessons by unit_id
+      const lessonsByUnit = (lessonsResult.data || []).reduce((acc, lesson) => {
+        if (!acc[lesson.unit_id]) acc[lesson.unit_id] = []
+        acc[lesson.unit_id].push(lesson)
+        return acc
+      }, {} as Record<string, Lesson[]>)
+
+      // Attach lessons to units
+      const unitsWithLessons = units.map(unit => ({
+        ...unit,
+        lessons: (lessonsByUnit[unit.id] || []).sort((a, b) => a.lesson_number - b.lesson_number)
+      }))
 
       setCourse({ ...courseData, units: unitsWithLessons })
+      setProgress(progressResult.data)
 
       if (unitsWithLessons.length > 0) {
         setExpandedUnits([unitsWithLessons[0].id])
-      }
-
-      if (user) {
-        const { data: progressData } = await supabase
-          .from('student_progress')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('course_id', courseData.id)
-          .single()
-        setProgress(progressData)
       }
 
       setLoading(false)

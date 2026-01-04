@@ -26,20 +26,24 @@ export default function LessonPage() {
     const fetchData = async () => {
       const supabase = createClient()
 
-      const { data: { user } } = await supabase.auth.getUser()
+      // Parallel fetch: user, lesson, and scripts
+      const [userResult, lessonResult, scriptsResult] = await Promise.all([
+        supabase.auth.getUser(),
+        supabase.from('lessons').select('*').eq('id', lessonId).single(),
+        supabase.from('scripts').select('*').eq('lesson_id', lessonId)
+      ])
 
-      const { data: lessonData } = await supabase
-        .from('lessons')
-        .select('*')
-        .eq('id', lessonId)
-        .single()
+      const user = userResult.data?.user
+      const lessonData = lessonResult.data
 
       if (!lessonData) {
         setLoading(false)
         return
       }
       setLesson(lessonData)
+      setScripts(scriptsResult.data || [])
 
+      // Fetch unit
       const { data: unitData } = await supabase
         .from('units')
         .select('*')
@@ -48,36 +52,16 @@ export default function LessonPage() {
       setUnit(unitData)
 
       if (unitData) {
-        const { data: courseData } = await supabase
-          .from('courses')
-          .select('*')
-          .eq('id', unitData.course_id)
-          .single()
-        setCourse(courseData)
+        // Parallel fetch: course, progress, and roadmap step
+        const [courseResult, progressResult, stepResult] = await Promise.all([
+          supabase.from('courses').select('*').eq('id', unitData.course_id).single(),
+          user ? supabase.from('student_progress').select('*').eq('user_id', user.id).eq('course_id', unitData.course_id).single() : Promise.resolve({ data: null }),
+          supabase.from('roadmap_steps').select('*').eq('course_id', unitData.course_id).eq('lesson_id', lessonId).single()
+        ])
 
-        const { data: scriptsData } = await supabase
-          .from('scripts')
-          .select('*')
-          .eq('lesson_id', lessonId)
-        setScripts(scriptsData || [])
-
-        if (user && courseData) {
-          const { data: progressData } = await supabase
-            .from('student_progress')
-            .select('*')
-            .eq('user_id', user.id)
-            .eq('course_id', courseData.id)
-            .single()
-          setProgress(progressData)
-
-          const { data: stepData } = await supabase
-            .from('roadmap_steps')
-            .select('*')
-            .eq('course_id', courseData.id)
-            .eq('lesson_id', lessonId)
-            .single()
-          setCurrentStep(stepData)
-        }
+        setCourse(courseResult.data)
+        setProgress(progressResult.data)
+        setCurrentStep(stepResult.data)
       }
 
       setLoading(false)
