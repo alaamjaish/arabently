@@ -94,7 +94,7 @@ ${text}`
       const wavBuffer = createWavBuffer(audioBuffer, 24000, 16, 1)
       mimeType = 'audio/wav'
       
-      return new NextResponse(wavBuffer, {
+      return new NextResponse(new Uint8Array(wavBuffer), {
         status: 200,
         headers: {
           'Content-Type': mimeType,
@@ -104,7 +104,7 @@ ${text}`
     }
 
     // Return the audio directly as binary
-    return new NextResponse(audioBuffer, {
+    return new NextResponse(new Uint8Array(audioBuffer), {
       status: 200,
       headers: {
         'Content-Type': mimeType,
