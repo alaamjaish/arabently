@@ -170,12 +170,12 @@ export default function DashboardPage() {
     <div className="min-h-screen p-6 lg:p-10">
       <div className="max-w-4xl mx-auto">
         {/* Welcome Header */}
-        <div className="mb-10 stagger-1">
-          <h1 className="text-4xl lg:text-5xl font-bold mb-3">
+        <div className="mb-8 sm:mb-10 stagger-1">
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3">
             <span className="text-foreground">Welcome back, </span>
             <span className="gradient-text">{userName}</span>
           </h1>
-          <p className="text-foreground-secondary text-lg">
+          <p className="text-foreground-secondary text-base sm:text-lg">
             Continue your Arabic learning journey
           </p>
         </div>
@@ -199,8 +199,8 @@ export default function DashboardPage() {
                 />
               </div>
 
-              <div className="p-8">
-                <div className="flex flex-col lg:flex-row lg:items-center gap-8">
+              <div className="p-5 sm:p-8">
+                <div className="flex flex-col lg:flex-row lg:items-center gap-6 sm:gap-8">
                   {/* Left: Content */}
                   <div className="flex-1">
                     {/* Type indicator */}
@@ -228,7 +228,7 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Title */}
-                    <h2 className="text-2xl lg:text-3xl font-bold mb-3 text-foreground">
+                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3 text-foreground">
                       {nextStep.lesson?.title || nextStep.script?.title || nextStep.step.description}
                     </h2>
 
@@ -239,7 +239,7 @@ export default function DashboardPage() {
                       </p>
                     )}
 
-                    <p className="text-foreground-secondary mb-8 leading-relaxed">
+                    <p className="text-foreground-secondary mb-6 sm:mb-8 leading-relaxed text-sm sm:text-base">
                       {nextStep.step.description ||
                         (nextStep.step.step_type === 'lesson'
                           ? 'Watch this video lesson to learn new vocabulary and grammar.'
@@ -268,8 +268,8 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Right: Progress Circle */}
-                  <div className="flex-shrink-0">
-                    <div className="relative w-36 h-36 mx-auto lg:mx-0">
+                  <div className="flex-shrink-0 hidden sm:block">
+                    <div className="relative w-28 sm:w-36 h-28 sm:h-36 mx-auto lg:mx-0">
                       <svg className="w-full h-full progress-ring">
                         <circle
                           cx="72"
@@ -364,24 +364,24 @@ export default function DashboardPage() {
 
         {/* Quick Stats */}
         {nextStep && (
-          <div className="mt-10 grid grid-cols-3 gap-4 stagger-4">
-            <div className="glass rounded-xl p-5 text-center">
-              <p className="text-3xl font-bold gradient-text mb-1">
+          <div className="mt-10 grid grid-cols-3 gap-2 sm:gap-4 stagger-4">
+            <div className="glass rounded-xl p-3 sm:p-5 text-center">
+              <p className="text-xl sm:text-3xl font-bold gradient-text mb-0.5 sm:mb-1">
                 {nextStep.progress?.completed_steps?.length || 0}
               </p>
-              <p className="text-sm text-muted-foreground">Steps Done</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Done</p>
             </div>
-            <div className="glass rounded-xl p-5 text-center">
-              <p className="text-3xl font-bold gradient-text mb-1">
+            <div className="glass rounded-xl p-3 sm:p-5 text-center">
+              <p className="text-xl sm:text-3xl font-bold gradient-text mb-0.5 sm:mb-1">
                 {nextStep.totalSteps - (nextStep.progress?.completed_steps?.length || 0)}
               </p>
-              <p className="text-sm text-muted-foreground">Steps Left</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Left</p>
             </div>
-            <div className="glass rounded-xl p-5 text-center">
-              <p className="text-3xl font-bold gradient-text mb-1">
+            <div className="glass rounded-xl p-3 sm:p-5 text-center">
+              <p className="text-xl sm:text-3xl font-bold gradient-text mb-0.5 sm:mb-1">
                 {nextStep.course.total_units}
               </p>
-              <p className="text-sm text-muted-foreground">Total Units</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Units</p>
             </div>
           </div>
         )}

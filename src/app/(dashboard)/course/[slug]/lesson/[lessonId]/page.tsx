@@ -288,33 +288,35 @@ export default function LessonPage() {
         )}
 
         {/* Bottom Action */}
-        <div className="glass rounded-xl p-6 flex items-center justify-between stagger-5">
-          <div>
-            <p className="text-sm text-muted-foreground mb-1">Ready to continue?</p>
-            <p className="text-foreground font-medium">
-              Mark this lesson as complete and move to the next step.
-            </p>
-          </div>
+        <div className="glass rounded-xl p-5 sm:p-6 stagger-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="text-center sm:text-left">
+              <p className="text-sm text-muted-foreground mb-1">Ready to continue?</p>
+              <p className="text-foreground font-medium text-sm sm:text-base">
+                Mark this lesson as complete.
+              </p>
+            </div>
 
-          <button
-            onClick={handleComplete}
-            disabled={completing || !currentStep}
-            className="btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {completing ? (
-              <>
-                <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
-                Saving...
-              </>
-            ) : (
-              <>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Complete & Continue
-              </>
-            )}
-          </button>
+            <button
+              onClick={handleComplete}
+              disabled={completing || !currentStep}
+              className="btn-primary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+            >
+              {completing ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Complete & Continue
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
