@@ -1,26 +1,579 @@
 @import "tailwindcss";
 
+/* ============================================
+   ARABENTLY - Distinctive Design System
+   A warm, cultural aesthetic for Arabic learning
+   ============================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light mode - Clean, warm, sophisticated */
+  --background: #faf8f5;
+  --background-secondary: #f5f2ed;
+  --foreground: #1a1614;
+  --foreground-secondary: #4a433d;
+  
+  --card: rgba(255, 255, 255, 0.9);
+  --card-foreground: #1a1614;
+  --card-border: rgba(0, 0, 0, 0.08);
+  
+  /* Primary - Warm Copper/Bronze */
+  --primary: #b8860b;
+  --primary-hover: #996f09;
+  --primary-light: #d4a84b;
+  --primary-foreground: #ffffff;
+  
+  /* Accent - Deep Teal */
+  --accent: #0d7377;
+  --accent-light: #14919b;
+  --accent-foreground: #ffffff;
+  
+  /* Secondary - Warm Neutrals */
+  --secondary: rgba(26, 22, 20, 0.05);
+  --secondary-hover: rgba(26, 22, 20, 0.08);
+  --secondary-foreground: #4a433d;
+  
+  /* Muted */
+  --muted: #e8e4df;
+  --muted-foreground: #6b635b;
+  
+  /* Border */
+  --border: rgba(26, 22, 20, 0.1);
+  --border-hover: rgba(184, 134, 11, 0.3);
+  
+  /* States */
+  --success: #2d8a39;
+  --error: #c53030;
+  --warning: #b7791f;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 30px rgba(184, 134, 11, 0.15);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #b8860b, #d4a84b);
+  --gradient-accent: linear-gradient(135deg, #0d7377, #14919b);
 }
 
+.dark {
+  /* Dark mode - Rich, immersive, elegant */
+  --background: #0d0c0b;
+  --background-secondary: #161412;
+  --foreground: #f5f2ed;
+  --foreground-secondary: #a39e97;
+  
+  --card: rgba(22, 20, 18, 0.8);
+  --card-foreground: #f5f2ed;
+  --card-border: rgba(255, 255, 255, 0.06);
+  
+  /* Primary - Warm Gold */
+  --primary: #d4a84b;
+  --primary-hover: #e8be65;
+  --primary-light: #f0d38a;
+  --primary-foreground: #0d0c0b;
+  
+  /* Accent - Teal remains similar */
+  --accent: #14919b;
+  --accent-light: #23b5c0;
+  --accent-foreground: #0d0c0b;
+  
+  /* Secondary */
+  --secondary: rgba(255, 255, 255, 0.04);
+  --secondary-hover: rgba(255, 255, 255, 0.08);
+  --secondary-foreground: #a39e97;
+  
+  /* Muted */
+  --muted: #2a2623;
+  --muted-foreground: #8a847c;
+  
+  /* Border */
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(212, 168, 75, 0.3);
+  
+  /* States */
+  --success: #48bb78;
+  --error: #fc8181;
+  --warning: #f6ad55;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 40px rgba(212, 168, 75, 0.2);
+}
+
+/* Theme mapping for Tailwind */
 @theme inline {
   --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-foreground-secondary: var(--foreground-secondary);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-card-border: var(--card-border);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+  --color-success: var(--success);
+  --color-error: var(--error);
+  --color-warning: var(--warning);
+  --font-sans: 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
+  --font-display: 'Amiri', 'IBM Plex Sans Arabic', serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Arabic text styling */
+.arabic {
+  font-family: 'IBM Plex Sans Arabic', 'Amiri', sans-serif;
+  direction: rtl;
+  text-align: right;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* ============================================
+   BACKGROUND EFFECTS
+   ============================================ */
+
+/* Subtle gradient background */
+.bg-pattern {
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, var(--primary), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, var(--accent), transparent 40%);
+  opacity: 0.03;
+}
+
+.dark .bg-pattern {
+  opacity: 0.08;
+}
+
+/* Floating orbs - more subtle */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orb-1 {
+  width: 500px;
+  height: 500px;
+  background: var(--primary);
+  opacity: 0.04;
+  top: -150px;
+  right: -150px;
+}
+
+.dark .orb-1 {
+  opacity: 0.08;
+}
+
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  background: var(--accent);
+  opacity: 0.03;
+  bottom: 10%;
+  left: -100px;
+}
+
+.dark .orb-2 {
+  opacity: 0.06;
+}
+
+/* ============================================
+   GLASS MORPHISM
+   ============================================ */
+
+.glass {
+  background: var(--card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+}
+
+.glass:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-accent {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+/* Fade In Up */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Staggered animations */
+.stagger-1 { animation: fadeInUp 0.6s ease-out 0.1s forwards; opacity: 0; }
+.stagger-2 { animation: fadeInUp 0.6s ease-out 0.2s forwards; opacity: 0; }
+.stagger-3 { animation: fadeInUp 0.6s ease-out 0.3s forwards; opacity: 0; }
+.stagger-4 { animation: fadeInUp 0.6s ease-out 0.4s forwards; opacity: 0; }
+.stagger-5 { animation: fadeInUp 0.6s ease-out 0.5s forwards; opacity: 0; }
+
+/* Gentle float */
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.float {
+  animation: gentleFloat 4s ease-in-out infinite;
+}
+
+/* Subtle pulse */
+@keyframes subtlePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.pulse-subtle {
+  animation: subtlePulse 2s ease-in-out infinite;
+}
+
+/* Glow effect */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(212, 168, 75, 0.2); }
+  50% { box-shadow: 0 0 30px rgba(212, 168, 75, 0.35); }
+}
+
+.glow-pulse {
+  animation: glowPulse 2.5s ease-in-out infinite;
+}
+
+/* Shimmer effect for loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, var(--muted) 25%, var(--muted-foreground) 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ============================================
+   COMPONENT STYLES
+   ============================================ */
+
+/* Primary Button */
+.btn-primary {
+  background: var(--gradient-primary);
+  color: var(--primary-foreground);
+  padding: 0.875rem 2rem;
+  border-radius: 0.875rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-primary:hover::before {
+  opacity: 1;
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--foreground);
+  padding: 0.875rem 2rem;
+  border-radius: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--secondary-hover);
+  border-color: var(--border-hover);
+}
+
+/* Ghost Button */
+.btn-ghost {
+  background: transparent;
+  color: var(--foreground-secondary);
+  padding: 0.875rem 1.5rem;
+  border-radius: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-ghost:hover {
+  background: var(--secondary);
+  color: var(--foreground);
+}
+
+/* Card */
+.card {
+  background: var(--card);
+  border-radius: 1rem;
+  border: 1px solid var(--card-border);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+}
+
+/* Feature Card */
+.feature-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 1.25rem;
+  padding: 1.75rem;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.feature-card .feature-icon {
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.1);
+}
+
+/* Badge */
+.badge {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: var(--secondary);
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+
+.badge-primary {
+  background: rgba(184, 134, 11, 0.1);
+  color: var(--primary);
+  border-color: rgba(184, 134, 11, 0.2);
+}
+
+.dark .badge-primary {
+  background: rgba(212, 168, 75, 0.1);
+  color: var(--primary);
+  border-color: rgba(212, 168, 75, 0.2);
+}
+
+/* Input */
+.input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border-radius: 0.875rem;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  transition: all 0.3s ease;
+}
+
+.input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+}
+
+.dark .input:focus {
+  box-shadow: 0 0 0 3px rgba(212, 168, 75, 0.1);
+}
+
+/* Progress Ring */
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring circle {
+  transition: stroke-dashoffset 1s ease-out;
+}
+
+/* Nav Active State */
+.nav-active {
+  background: rgba(184, 134, 11, 0.1);
+  color: var(--primary);
+}
+
+.dark .nav-active {
+  background: rgba(212, 168, 75, 0.1);
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* ============================================
+   SMOOTH TRANSITIONS
+   ============================================ */
+
+a, button, input, select, textarea {
+  transition: all 0.2s ease;
+}
+
+/* ============================================
+   DECORATIVE ELEMENTS
+   ============================================ */
+
+/* Arabic calligraphy pattern (subtle) */
+.pattern-arabic {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0C13.4 0 0 13.4 0 30s13.4 30 30 30 30-13.4 30-30S46.6 0 30 0zm0 55C16.2 55 5 43.8 5 30S16.2 5 30 5s25 11.2 25 25-11.2 25-25 25z' fill='%23b8860b' fill-opacity='0.02'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+}
+
+.dark .pattern-arabic {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0C13.4 0 0 13.4 0 30s13.4 30 30 30 30-13.4 30-30S46.6 0 30 0zm0 55C16.2 55 5 43.8 5 30S16.2 5 30 5s25 11.2 25 25-11.2 25-25 25z' fill='%23d4a84b' fill-opacity='0.03'/%3E%3C/svg%3E");
+}
+
+/* Divider with cultural flair */
+.divider-ornate {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.divider-ornate::before,
+.divider-ornate::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+}
+
+.divider-ornate span {
+  color: var(--primary);
+  font-size: 1.25rem;
+}
+
+/* Selection */
+::selection {
+  background: rgba(184, 134, 11, 0.2);
+  color: var(--foreground);
+}
+
+.dark ::selection {
+  background: rgba(212, 168, 75, 0.3);
 }
