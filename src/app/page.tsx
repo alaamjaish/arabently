@@ -23,7 +23,7 @@ export default function Home() {
               <ThemeToggle />
               <Link
                 href="/login"
-                className="btn-ghost hidden sm:inline-flex"
+                className="text-foreground-secondary hover:text-foreground text-sm font-medium transition-colors"
               >
                 Log in
               </Link>
@@ -31,7 +31,7 @@ export default function Home() {
                 href="/signup"
                 className="btn-primary text-xs sm:text-sm py-2 sm:py-2.5 px-3 sm:px-5"
               >
-                Get Started
+                Sign up
               </Link>
             </div>
           </div>
@@ -72,6 +72,14 @@ export default function Home() {
               See How It Works
             </Link>
           </div>
+
+          {/* Already have account */}
+          <p className="stagger-3 text-foreground-secondary text-sm mt-4">
+            Already have an account?{' '}
+            <Link href="/login" className="text-primary font-medium hover:underline">
+              Log in
+            </Link>
+          </p>
 
           {/* Quick Stats */}
           <div className="stagger-4 flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8 mt-10 sm:mt-14 text-xs sm:text-sm">
