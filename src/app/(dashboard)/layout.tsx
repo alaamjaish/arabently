@@ -1,42 +1,62 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import type { Profile, Course } from '@/lib/types'
 
+// Global cache for layout data - persists across navigations
+let layoutCache: { profile: Profile | null; courses: Course[]; fetched: boolean } = {
+  profile: null,
+  courses: [],
+  fetched: false
+}
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const [profile, setProfile] = useState<Profile | null>(null)
-  const [courses, setCourses] = useState<Course[]>([])
+  const [profile, setProfile] = useState<Profile | null>(layoutCache.profile)
+  const [courses, setCourses] = useState<Course[]>(layoutCache.courses)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
+  const hasFetched = useRef(layoutCache.fetched)
 
   useEffect(() => {
+    // Skip if already fetched this session
+    if (hasFetched.current) return
+    hasFetched.current = true
+    layoutCache.fetched = true
+
     const fetchData = async () => {
       const supabase = createClient()
 
-      const { data: { user } } = await supabase.auth.getUser()
+      // Parallel fetch for speed
+      const [userResult, coursesResult] = await Promise.all([
+        supabase.auth.getUser(),
+        supabase.from('courses').select('*').eq('is_published', true)
+      ])
+
+      const user = userResult.data?.user
+      const coursesData = coursesResult.data || []
+
+      // Update cache and state
+      layoutCache.courses = coursesData
+      setCourses(coursesData)
+
       if (user) {
         const { data: profileData } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', user.id)
           .single()
+        layoutCache.profile = profileData
         setProfile(profileData)
       }
-
-      const { data: coursesData } = await supabase
-        .from('courses')
-        .select('*')
-        .eq('is_published', true)
-      setCourses(coursesData || [])
     }
 
     fetchData()

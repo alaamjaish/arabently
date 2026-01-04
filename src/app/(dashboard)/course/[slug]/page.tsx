@@ -14,63 +14,104 @@ interface CourseData extends Course {
   units: UnitWithLessons[]
 }
 
+// Cache for course data to avoid refetching
+const courseCache: Record<string, { course: CourseData; timestamp: number }> = {}
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+
 export default function CoursePage() {
   const params = useParams()
   const slug = params.slug as string
-  const [course, setCourse] = useState<CourseData | null>(null)
+  const [course, setCourse] = useState<CourseData | null>(() => {
+    // Check cache immediately on mount
+    const cached = courseCache[slug]
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      return cached.course
+    }
+    return null
+  })
   const [progress, setProgress] = useState<StudentProgress | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!course) // Only show loading if no cache
   const [expandedUnits, setExpandedUnits] = useState<string[]>([])
+
+  useEffect(() => {
+    // If we have cached data, set expanded units immediately
+    if (course && course.units.length > 0 && expandedUnits.length === 0) {
+      setExpandedUnits([course.units[0].id])
+    }
+  }, [course, expandedUnits.length])
 
   useEffect(() => {
     const fetchData = async () => {
       const supabase = createClient()
 
-      // Parallel fetch: user and course
-      const [userResult, courseResult] = await Promise.all([
-        supabase.auth.getUser(),
-        supabase.from('courses').select('*').eq('slug', slug).single()
-      ])
+      // Check cache first
+      const cached = courseCache[slug]
+      if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        setCourse(cached.course)
+        if (cached.course.units.length > 0) {
+          setExpandedUnits([cached.course.units[0].id])
+        }
+        // Still fetch progress in background
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          const { data: progressData } = await supabase
+            .from('student_progress')
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('course_id', cached.course.id)
+            .single()
+          setProgress(progressData)
+        }
+        setLoading(false)
+        return
+      }
 
-      const user = userResult.data?.user
-      const courseData = courseResult.data
+      // Single optimized query: get course with units and lessons in one go
+      const { data: courseData } = await supabase
+        .from('courses')
+        .select(`
+          *,
+          units (
+            *,
+            lessons (*)
+          )
+        `)
+        .eq('slug', slug)
+        .single()
 
       if (!courseData) {
         setLoading(false)
         return
       }
 
-      // First get units
-      const unitsResult = await supabase.from('units').select('*').eq('course_id', courseData.id).order('unit_number')
-      const units = unitsResult.data || []
-      const unitIds = units.map(u => u.id)
+      // Sort units and lessons
+      const sortedUnits = (courseData.units || [])
+        .sort((a: Unit, b: Unit) => a.unit_number - b.unit_number)
+        .map((unit: UnitWithLessons) => ({
+          ...unit,
+          lessons: (unit.lessons || []).sort((a: Lesson, b: Lesson) => a.lesson_number - b.lesson_number)
+        }))
 
-      // Parallel fetch: all lessons for all units, and progress
-      const [lessonsResult, progressResult] = await Promise.all([
-        unitIds.length > 0 
-          ? supabase.from('lessons').select('*').in('unit_id', unitIds).order('lesson_number')
-          : Promise.resolve({ data: [] }),
-        user ? supabase.from('student_progress').select('*').eq('user_id', user.id).eq('course_id', courseData.id).single() : Promise.resolve({ data: null })
-      ])
+      const processedCourse = { ...courseData, units: sortedUnits }
+      
+      // Cache the result
+      courseCache[slug] = { course: processedCourse, timestamp: Date.now() }
+      
+      setCourse(processedCourse)
+      if (sortedUnits.length > 0) {
+        setExpandedUnits([sortedUnits[0].id])
+      }
 
-      // Group lessons by unit_id
-      const lessonsByUnit = (lessonsResult.data || []).reduce((acc, lesson) => {
-        if (!acc[lesson.unit_id]) acc[lesson.unit_id] = []
-        acc[lesson.unit_id].push(lesson)
-        return acc
-      }, {} as Record<string, Lesson[]>)
-
-      // Attach lessons to units
-      const unitsWithLessons = units.map(unit => ({
-        ...unit,
-        lessons: (lessonsByUnit[unit.id] || []).sort((a: Lesson, b: Lesson) => a.lesson_number - b.lesson_number)
-      }))
-
-      setCourse({ ...courseData, units: unitsWithLessons })
-      setProgress(progressResult.data)
-
-      if (unitsWithLessons.length > 0) {
-        setExpandedUnits([unitsWithLessons[0].id])
+      // Fetch progress in parallel (non-blocking)
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: progressData } = await supabase
+          .from('student_progress')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('course_id', courseData.id)
+          .single()
+        setProgress(progressData)
       }
 
       setLoading(false)
