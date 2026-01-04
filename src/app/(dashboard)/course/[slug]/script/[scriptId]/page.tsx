@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { TTSAudioPlayer } from '@/components/TTSAudioPlayer'
 import type { Script, Course, StudentProgress, RoadmapStep } from '@/lib/types'
 
 export default function ScriptPage() {
@@ -18,7 +19,7 @@ export default function ScriptPage() {
   const [currentStep, setCurrentStep] = useState<RoadmapStep | null>(null)
   const [loading, setLoading] = useState(true)
   const [completing, setCompleting] = useState(false)
-  const [showTranscript, setShowTranscript] = useState(false)
+  const [useTTS, setUseTTS] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -211,29 +212,48 @@ export default function ScriptPage() {
           </p>
         </div>
 
-        {/* Audio Player Card */}
-        <div className="glass rounded-2xl p-8 mb-8 stagger-2">
-          {/* Big play button */}
-          <div className="flex justify-center mb-8">
-            <button className="group relative w-28 h-28 rounded-full bg-gradient-to-br from-primary to-primary-light flex items-center justify-center shadow-2xl hover:scale-105 transition-all duration-300">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-primary-light animate-ping opacity-20"></div>
-              <svg className="w-12 h-12 text-primary-foreground ml-2 relative z-10" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
+        {/* Audio Source Toggle */}
+        <div className="flex justify-center mb-6 stagger-2">
+          <div className="glass rounded-full p-1 flex gap-1">
+            <button
+              onClick={() => setUseTTS(true)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                useTTS 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'text-foreground-secondary hover:text-foreground'
+              }`}
+            >
+              🤖 AI Voice
+            </button>
+            <button
+              onClick={() => setUseTTS(false)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                !useTTS 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'text-foreground-secondary hover:text-foreground'
+              }`}
+            >
+              🎬 Video
             </button>
           </div>
+        </div>
 
-          {/* Type label */}
-          <div className="text-center mb-6">
-            <p className="text-sm text-muted-foreground capitalize mb-1">
-              {script.type === 'dialogue' ? 'Dialogue' :
+        {/* TTS Audio Player */}
+        {useTTS && script.script_text && (
+          <div className="mb-8 stagger-2">
+            <TTSAudioPlayer
+              text={script.script_text}
+              title={script.type === 'dialogue' ? 'Dialogue' :
                 script.type === 'input' ? 'Comprehensible Input' : 'Practice Audio'}
-            </p>
+              autoGenerate={true}
+            />
           </div>
+        )}
 
-          {/* YouTube embed if applicable */}
-          {script.audio_url && script.audio_url.includes('youtube') && (
-            <div className="aspect-video rounded-xl overflow-hidden bg-background-secondary mb-6">
+        {/* YouTube Video Player (fallback) */}
+        {!useTTS && script.audio_url && script.audio_url.includes('youtube') && (
+          <div className="glass rounded-2xl p-6 sm:p-8 mb-8 stagger-2">
+            <div className="aspect-video rounded-xl overflow-hidden bg-background-secondary">
               <iframe
                 src={script.audio_url}
                 className="w-full h-full"
@@ -241,54 +261,15 @@ export default function ScriptPage() {
                 allowFullScreen
               />
             </div>
-          )}
-
-          {/* Progress bar placeholder */}
-          {!script.audio_url?.includes('youtube') && (
-            <div className="mb-6">
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div className="h-full w-0 bg-gradient-to-r from-primary to-primary-light"></div>
+            {script.script_text && (
+              <div className="mt-6 p-4 rounded-xl bg-secondary border border-border">
+                <p className="arabic text-lg sm:text-xl text-primary leading-loose text-center">
+                  {script.script_text}
+                </p>
               </div>
-              <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-                <span>0:00</span>
-                <span>--:--</span>
-              </div>
-            </div>
-          )}
-
-          {/* Transcript toggle */}
-          {script.script_text && (
-            <div className="border-t border-border pt-6">
-              <button
-                onClick={() => setShowTranscript(!showTranscript)}
-                className="w-full flex items-center justify-between p-4 rounded-xl hover:bg-secondary transition-colors"
-              >
-                <span className="flex items-center gap-3 text-foreground font-medium">
-                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  {showTranscript ? 'Hide' : 'Show'} Transcript
-                </span>
-                <svg
-                  className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${showTranscript ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {showTranscript && (
-                <div className="mt-4 p-6 rounded-xl bg-secondary border border-border">
-                  <p className="arabic text-2xl leading-loose text-center text-primary">
-                    {script.script_text}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
         {/* Tips Card */}
         <div className="glass rounded-xl p-6 mb-8 stagger-3">
