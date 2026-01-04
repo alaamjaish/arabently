@@ -11,15 +11,15 @@ export default function Home() {
 
       <div className="min-h-screen flex flex-col relative z-10">
         {/* Header */}
-        <header className="p-6 md:p-8">
+        <header className="p-4 sm:p-6 md:p-8">
           <div className="max-w-6xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-3 stagger-1">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center shadow-lg">
-                <span className="text-primary-foreground font-bold text-xl font-display">ع</span>
+            <div className="flex items-center gap-2 sm:gap-3 stagger-1">
+              <div className="w-9 sm:w-11 h-9 sm:h-11 rounded-xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center shadow-lg">
+                <span className="text-primary-foreground font-bold text-lg sm:text-xl font-display">ع</span>
               </div>
-              <span className="text-foreground font-semibold text-lg">Arabently</span>
+              <span className="text-foreground font-semibold text-base sm:text-lg">Arabently</span>
             </div>
-            <div className="flex items-center gap-4 stagger-2">
+            <div className="flex items-center gap-2 sm:gap-4 stagger-2">
               <ThemeToggle />
               <Link
                 href="/login"
@@ -29,7 +29,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/signup"
-                className="btn-primary text-sm py-2.5 px-5"
+                className="btn-primary text-xs sm:text-sm py-2 sm:py-2.5 px-3 sm:px-5"
               >
                 Get Started
               </Link>
@@ -38,16 +38,16 @@ export default function Home() {
         </header>
 
         {/* Hero Section */}
-        <main className="flex-1 flex flex-col items-center justify-center px-6 text-center -mt-16">
+        <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 text-center pt-4 sm:pt-0 sm:-mt-16">
           {/* Badge */}
-          <div className="stagger-1 mb-8">
-            <span className="badge badge-primary">
-              ✨ Powered by the Next Step System
+          <div className="stagger-1 mb-6 sm:mb-8">
+            <span className="badge badge-primary text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2">
+              ✨ Next Step System
             </span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="stagger-2 text-4xl md:text-5xl lg:text-7xl font-bold mb-6 leading-tight">
+          <h1 className="stagger-2 text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
             <span className="text-foreground">Learn the </span>
             <span className="gradient-text font-display">Saudi Dialect</span>
             <br />
@@ -55,40 +55,40 @@ export default function Home() {
           </h1>
 
           {/* Subheadline */}
-          <p className="stagger-3 text-foreground-secondary text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
+          <p className="stagger-3 text-foreground-secondary text-base sm:text-lg md:text-xl max-w-2xl mb-8 sm:mb-10 leading-relaxed px-2">
             Stop guessing what to study next. Our guided learning system takes you step by step
             from complete beginner to conversational fluency in Saudi Arabic.
           </p>
 
           {/* CTA Buttons */}
-          <div className="stagger-3 flex flex-col sm:flex-row gap-4">
-            <Link href="/signup" className="btn-primary glow-pulse">
+          <div className="stagger-3 flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0">
+            <Link href="/signup" className="btn-primary glow-pulse justify-center">
               <span>Start Learning Free</span>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </Link>
-            <Link href="#features" className="btn-secondary">
+            <Link href="#features" className="btn-secondary justify-center">
               See How It Works
             </Link>
           </div>
 
           {/* Quick Stats */}
-          <div className="stagger-4 flex flex-wrap items-center justify-center gap-6 md:gap-8 mt-14 text-sm">
-            <div className="flex items-center gap-2 text-foreground-secondary">
-              <svg className="w-4 h-4 text-success" fill="currentColor" viewBox="0 0 20 20">
+          <div className="stagger-4 flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8 mt-10 sm:mt-14 text-xs sm:text-sm">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-foreground-secondary">
+              <svg className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-success" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
-              <span>10 Units, 50 Lessons</span>
+              <span>50 Lessons</span>
             </div>
-            <div className="flex items-center gap-2 text-foreground-secondary">
-              <svg className="w-4 h-4 text-success" fill="currentColor" viewBox="0 0 20 20">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-foreground-secondary">
+              <svg className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-success" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
               <span>Spaced Repetition</span>
             </div>
-            <div className="flex items-center gap-2 text-foreground-secondary">
-              <svg className="w-4 h-4 text-success" fill="currentColor" viewBox="0 0 20 20">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-foreground-secondary">
+              <svg className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-success" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
               <span>Saudi Dialect</span>
@@ -97,18 +97,18 @@ export default function Home() {
         </main>
 
         {/* Features Section */}
-        <section id="features" className="px-6 py-20">
+        <section id="features" className="px-4 sm:px-6 py-16 sm:py-20">
           <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-14">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+            <div className="text-center mb-10 sm:mb-14">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-foreground">
                 How It Works
               </h2>
-              <p className="text-foreground-secondary max-w-xl mx-auto">
+              <p className="text-foreground-secondary max-w-xl mx-auto text-sm sm:text-base">
                 A simple, effective system designed for real progress
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
               {/* Feature 1 */}
               <div className="feature-card stagger-3">
                 <div className="feature-icon w-14 h-14 mb-5 rounded-xl bg-gradient-to-br from-primary/10 to-primary-light/10 flex items-center justify-center">
@@ -153,46 +153,46 @@ export default function Home() {
         </section>
 
         {/* Arabic Preview Section */}
-        <section className="px-6 py-16">
+        <section className="px-4 sm:px-6 py-12 sm:py-16">
           <div className="max-w-3xl mx-auto">
-            <div className="glass rounded-2xl p-8 md:p-10">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8 text-center">
+            <div className="glass rounded-2xl p-5 sm:p-8 md:p-10">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-6 sm:mb-8 text-center">
                 What You&apos;ll Learn
               </h2>
 
-              <div className="space-y-4">
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-secondary hover:bg-secondary-hover transition-colors">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-primary-light/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-primary font-bold">1</span>
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-secondary hover:bg-secondary-hover transition-colors">
+                  <div className="w-8 sm:w-10 h-8 sm:h-10 rounded-lg bg-gradient-to-br from-primary/20 to-primary-light/20 flex items-center justify-center flex-shrink-0">
+                    <span className="text-primary font-bold text-sm sm:text-base">1</span>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-foreground font-medium">Greetings & Introductions</h3>
-                    <p className="text-foreground-secondary text-sm">
-                      Master common phrases like <span className="arabic text-primary font-medium">مرحبا</span> (hello) and <span className="arabic text-primary font-medium">كيفك؟</span> (how are you?)
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-foreground font-medium text-sm sm:text-base">Greetings & Introductions</h3>
+                    <p className="text-foreground-secondary text-xs sm:text-sm">
+                      Master phrases like <span className="arabic text-primary font-medium">مرحبا</span> and <span className="arabic text-primary font-medium">كيفك؟</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-secondary hover:bg-secondary-hover transition-colors">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent/20 to-accent-light/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-accent font-bold">2</span>
+                <div className="flex items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-secondary hover:bg-secondary-hover transition-colors">
+                  <div className="w-8 sm:w-10 h-8 sm:h-10 rounded-lg bg-gradient-to-br from-accent/20 to-accent-light/20 flex items-center justify-center flex-shrink-0">
+                    <span className="text-accent font-bold text-sm sm:text-base">2</span>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-foreground font-medium">Daily Conversations</h3>
-                    <p className="text-foreground-secondary text-sm">
-                      Talk about family, work, food with phrases like <span className="arabic text-accent font-medium">وش شغلك؟</span> (what do you do?)
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-foreground font-medium text-sm sm:text-base">Daily Conversations</h3>
+                    <p className="text-foreground-secondary text-xs sm:text-sm">
+                      Talk about family, work, food: <span className="arabic text-accent font-medium">وش شغلك؟</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-secondary hover:bg-secondary-hover transition-colors">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
-                    <span className="gradient-text font-bold">3</span>
+                <div className="flex items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-secondary hover:bg-secondary-hover transition-colors">
+                  <div className="w-8 sm:w-10 h-8 sm:h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
+                    <span className="gradient-text font-bold text-sm sm:text-base">3</span>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-foreground font-medium">Real Saudi Dialect</h3>
-                    <p className="text-foreground-secondary text-sm">
-                      Not textbook Arabic. Learn how Saudis actually speak: <span className="arabic text-primary font-medium">يلا نروح</span> (let&apos;s go)
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-foreground font-medium text-sm sm:text-base">Real Saudi Dialect</h3>
+                    <p className="text-foreground-secondary text-xs sm:text-sm">
+                      How Saudis speak: <span className="arabic text-primary font-medium">يلا نروح</span> (let&apos;s go)
                     </p>
                   </div>
                 </div>
@@ -202,58 +202,58 @@ export default function Home() {
         </section>
 
         {/* Testimonial Quote */}
-        <section className="px-6 py-16">
+        <section className="px-4 sm:px-6 py-12 sm:py-16">
           <div className="max-w-2xl mx-auto text-center">
-            <div className="divider-ornate mb-8">
+            <div className="divider-ornate mb-6 sm:mb-8">
               <span>❖</span>
             </div>
-            <blockquote className="text-xl md:text-2xl text-foreground font-display italic leading-relaxed mb-6">
+            <blockquote className="text-lg sm:text-xl md:text-2xl text-foreground font-display italic leading-relaxed mb-4 sm:mb-6 px-2">
               &ldquo;Finally a course that teaches REAL Saudi Arabic! After 3 months, I can chat with my Saudi colleagues naturally.&rdquo;
             </blockquote>
-            <p className="text-foreground-secondary">
+            <p className="text-foreground-secondary text-sm sm:text-base">
               — Sarah M., <span className="text-primary">USA</span>
             </p>
           </div>
         </section>
 
         {/* CTA Section */}
-        <section className="px-6 py-20 text-center">
+        <section className="px-4 sm:px-6 py-16 sm:py-20 text-center">
           <div className="max-w-xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3 sm:mb-4">
               Ready to Start Your Journey?
             </h2>
-            <p className="text-foreground-secondary mb-8">
+            <p className="text-foreground-secondary mb-6 sm:mb-8 text-sm sm:text-base">
               Join thousands of learners mastering conversational Arabic.
             </p>
-            <Link href="/signup" className="btn-primary text-lg px-10 py-4 glow-pulse inline-flex">
+            <Link href="/signup" className="btn-primary text-base sm:text-lg px-8 sm:px-10 py-3 sm:py-4 glow-pulse inline-flex">
               <span>Start Your Journey</span>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </Link>
-            <p className="text-muted-foreground text-sm mt-4">
+            <p className="text-muted-foreground text-xs sm:text-sm mt-3 sm:mt-4">
               No credit card required. Start learning in under a minute.
             </p>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="py-8 border-t border-border">
-          <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <footer className="py-6 sm:py-8 border-t border-border">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col items-center gap-4 text-center">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm font-display">ع</span>
+              <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-lg bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-xs sm:text-sm font-display">ع</span>
               </div>
-              <span className="text-foreground font-medium">Arabently</span>
+              <span className="text-foreground font-medium text-sm sm:text-base">Arabently</span>
             </div>
-            <p className="text-muted-foreground text-sm">
-              © 2025 Arabently. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
               <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
               <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
               <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
             </div>
+            <p className="text-muted-foreground text-xs sm:text-sm">
+              © 2025 Arabently. All rights reserved.
+            </p>
           </div>
         </footer>
       </div>
