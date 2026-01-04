@@ -63,7 +63,7 @@ export default function CoursePage() {
       // Attach lessons to units
       const unitsWithLessons = units.map(unit => ({
         ...unit,
-        lessons: (lessonsByUnit[unit.id] || []).sort((a, b) => a.lesson_number - b.lesson_number)
+        lessons: (lessonsByUnit[unit.id] || []).sort((a: Lesson, b: Lesson) => a.lesson_number - b.lesson_number)
       }))
 
       setCourse({ ...courseData, units: unitsWithLessons })
