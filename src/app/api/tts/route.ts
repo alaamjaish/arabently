@@ -1,8 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
 import { NextRequest, NextResponse } from 'next/server'
-
-// Initialize the Gemini client
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
 
 // Available TTS models
 const TTS_MODELS = {
@@ -22,11 +18,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'GEMINI_API_KEY not configured' }, { status: 500 })
     }
 
-    // Use Gemini 2.5 Flash Preview TTS (faster and cheaper) or Pro
     const modelName = modelType === 'pro' ? TTS_MODELS.pro : TTS_MODELS.flash
-    const model = genAI.getGenerativeModel({
-      model: modelName,
-    })
 
     // Create a prompt that instructs Gemini to speak in Saudi dialect
     const prompt = `You are a native Saudi Arabic speaker from Riyadh. 
@@ -38,41 +30,86 @@ Make it sound warm and friendly.
 Text to read:
 ${text}`
 
-    // Generate content with speech
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: {
-        responseModalities: ['AUDIO'],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: {
-              voiceName: voice,
+    // Call Gemini API directly with REST for better audio handling
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${process.env.GEMINI_API_KEY}`
+    
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          role: 'user',
+          parts: [{ text: prompt }]
+        }],
+        generationConfig: {
+          responseModalities: ['AUDIO'],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: {
+                voiceName: voice,
+              },
             },
           },
         },
-      },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
+      }),
+    })
 
-    const response = result.response
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error('Gemini API Error:', errorData)
+      return NextResponse.json(
+        { error: 'Gemini API error', details: errorData.error?.message || 'Unknown error' },
+        { status: response.status }
+      )
+    }
+
+    const data = await response.json()
     
     // Extract audio data from response
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const audioData = (response as any).candidates?.[0]?.content?.parts?.[0]?.inlineData
+    const audioData = data.candidates?.[0]?.content?.parts?.[0]?.inlineData
 
     if (!audioData) {
-      // Fallback: If no audio, return an error
+      console.error('No audio data in response:', JSON.stringify(data, null, 2))
       return NextResponse.json(
-        { error: 'Audio generation not available. Try again.' },
+        { error: 'No audio generated. The model may not support audio output.' },
         { status: 503 }
       )
     }
 
-    // Return the audio as base64
-    return NextResponse.json({
-      audio: audioData.data,
-      mimeType: audioData.mimeType || 'audio/mp3',
-      model: modelName,
+    // Log the mime type for debugging
+    console.log('Audio MIME type:', audioData.mimeType)
+
+    // Gemini returns audio as base64, decode it
+    const audioBuffer = Buffer.from(audioData.data, 'base64')
+    
+    // Determine the correct MIME type
+    // Gemini typically returns audio/L16 (raw PCM) or audio/wav
+    let mimeType = audioData.mimeType || 'audio/wav'
+    
+    // If it's raw PCM, we need to wrap it in a WAV header for browser compatibility
+    if (mimeType === 'audio/L16' || mimeType.includes('L16')) {
+      // Create WAV header for 24kHz, 16-bit, mono audio (Gemini's typical output)
+      const wavBuffer = createWavBuffer(audioBuffer, 24000, 16, 1)
+      mimeType = 'audio/wav'
+      
+      return new NextResponse(wavBuffer, {
+        status: 200,
+        headers: {
+          'Content-Type': mimeType,
+          'Content-Length': wavBuffer.length.toString(),
+        },
+      })
+    }
+
+    // Return the audio directly as binary
+    return new NextResponse(audioBuffer, {
+      status: 200,
+      headers: {
+        'Content-Type': mimeType,
+        'Content-Length': audioBuffer.length.toString(),
+      },
     })
   } catch (error) {
     console.error('TTS Error:', error)
@@ -81,6 +118,39 @@ ${text}`
       { status: 500 }
     )
   }
+}
+
+// Helper function to create a WAV file from raw PCM data
+function createWavBuffer(pcmData: Buffer, sampleRate: number, bitsPerSample: number, numChannels: number): Buffer {
+  const byteRate = sampleRate * numChannels * bitsPerSample / 8
+  const blockAlign = numChannels * bitsPerSample / 8
+  const dataSize = pcmData.length
+  const headerSize = 44
+  const fileSize = dataSize + headerSize - 8
+
+  const buffer = Buffer.alloc(headerSize + dataSize)
+
+  // RIFF header
+  buffer.write('RIFF', 0)
+  buffer.writeUInt32LE(fileSize, 4)
+  buffer.write('WAVE', 8)
+
+  // fmt subchunk
+  buffer.write('fmt ', 12)
+  buffer.writeUInt32LE(16, 16) // Subchunk1Size (16 for PCM)
+  buffer.writeUInt16LE(1, 20) // AudioFormat (1 for PCM)
+  buffer.writeUInt16LE(numChannels, 22)
+  buffer.writeUInt32LE(sampleRate, 24)
+  buffer.writeUInt32LE(byteRate, 28)
+  buffer.writeUInt16LE(blockAlign, 32)
+  buffer.writeUInt16LE(bitsPerSample, 34)
+
+  // data subchunk
+  buffer.write('data', 36)
+  buffer.writeUInt32LE(dataSize, 40)
+  pcmData.copy(buffer, 44)
+
+  return buffer
 }
 
 // GET endpoint to check if TTS is available

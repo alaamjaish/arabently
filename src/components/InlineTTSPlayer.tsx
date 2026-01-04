@@ -48,34 +48,32 @@ export function InlineTTSPlayer({ text, title, type }: InlineTTSPlayerProps) {
         body: JSON.stringify({ text }),
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
+      // Check if response is JSON (error) or binary (audio)
+      const contentType = response.headers.get('content-type') || ''
+      
+      if (contentType.includes('application/json')) {
+        // It's an error response
+        const data = await response.json()
         throw new Error(data.error || 'Failed to generate audio')
       }
 
-      if (data.audio) {
-        // Convert base64 to blob
-        const binaryString = atob(data.audio)
-        const bytes = new Uint8Array(binaryString.length)
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i)
-        }
-        const blob = new Blob([bytes], { type: data.mimeType || 'audio/mp3' })
-        const url = URL.createObjectURL(blob)
-        setAudioUrl(url)
-        setStatus('ready')
-        
-        // Auto-play after generation
-        setTimeout(() => {
-          if (audioRef.current) {
-            audioRef.current.play()
-            setStatus('playing')
-          }
-        }, 100)
-      } else {
-        throw new Error('No audio data received')
+      if (!response.ok) {
+        throw new Error('Failed to generate audio')
       }
+
+      // Get the audio as a blob directly
+      const audioBlob = await response.blob()
+      const url = URL.createObjectURL(audioBlob)
+      setAudioUrl(url)
+      setStatus('ready')
+      
+      // Auto-play after generation
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.play().catch(console.error)
+          setStatus('playing')
+        }
+      }, 100)
     } catch (err) {
       console.error('TTS Error:', err)
       setErrorMsg(err instanceof Error ? err.message : 'Failed to generate audio')
