@@ -137,7 +137,7 @@ export default function DashboardLayout({
                       <Link
                         href={`/course/${course.slug}`}
                         onClick={() => setSidebarOpen(false)}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${pathname.startsWith(`/course/${course.slug}`)
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${pathname.startsWith(`/course/${course.slug}`) && !pathname.includes('/quiz')
                           ? 'bg-primary/10 text-primary border border-primary/20'
                           : 'text-foreground-secondary hover:bg-secondary hover:text-foreground'
                         }`}
@@ -149,6 +149,33 @@ export default function DashboardLayout({
                       </Link>
                     </li>
                   ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Vocabulary Quiz */}
+            {courses.length > 0 && (
+              <div className="mt-6">
+                <h3 className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                  Practice
+                </h3>
+                <ul className="space-y-1">
+                  <li>
+                    <Link
+                      href={`/course/${courses[0]?.slug}/quiz`}
+                      onClick={() => setSidebarOpen(false)}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${pathname.includes('/quiz')
+                        ? 'bg-accent/10 text-accent border border-accent/20'
+                        : 'text-foreground-secondary hover:bg-secondary hover:text-foreground'
+                      }`}
+                    >
+                      <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                      </svg>
+                      <span className="font-medium">Vocabulary Quiz</span>
+                      <span className="ml-auto px-2 py-0.5 text-xs font-medium bg-accent/10 text-accent rounded-full">New</span>
+                    </Link>
+                  </li>
                 </ul>
               </div>
             )}
