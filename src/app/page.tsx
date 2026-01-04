@@ -48,8 +48,8 @@ export default function Home() {
 
           {/* Main Headline */}
           <h1 className="stagger-2 text-4xl md:text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-            <span className="text-foreground">Learn </span>
-            <span className="gradient-text font-display">العربية</span>
+            <span className="text-foreground">Learn the </span>
+            <span className="gradient-text font-display">Saudi Dialect</span>
             <br />
             <span className="text-foreground">The Smart Way</span>
           </h1>
