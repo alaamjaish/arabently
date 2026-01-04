@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { InlineTTSPlayer } from '@/components/InlineTTSPlayer'
 import type { Lesson, Script, Course, Unit, StudentProgress, RoadmapStep } from '@/lib/types'
 
 export default function LessonPage() {
@@ -261,27 +262,12 @@ export default function LessonPage() {
 
             <div className="space-y-4">
               {scripts.map((script) => (
-                <div key={script.id} className="glass rounded-xl p-5">
-                  <div className="flex items-center gap-4">
-                    <button className="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-light flex items-center justify-center flex-shrink-0 hover:scale-105 transition-transform shadow-lg">
-                      <svg className="w-6 h-6 text-primary-foreground ml-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </button>
-                    <div className="flex-1">
-                      <h3 className="font-medium text-foreground">{script.title}</h3>
-                      <p className="text-sm text-muted-foreground capitalize">{script.type}</p>
-                    </div>
-                  </div>
-
-                  {script.script_text && (
-                    <div className="mt-4 p-4 rounded-xl bg-secondary border border-border">
-                      <p className="arabic text-lg text-primary leading-loose text-center">
-                        {script.script_text}
-                      </p>
-                    </div>
-                  )}
-                </div>
+                <InlineTTSPlayer
+                  key={script.id}
+                  text={script.script_text || ''}
+                  title={script.title}
+                  type={script.type}
+                />
               ))}
             </div>
           </div>
