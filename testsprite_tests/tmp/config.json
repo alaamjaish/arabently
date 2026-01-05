@@ -1,0 +1,15 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "loginUser": "",
+  "loginPassword": "",
+  "executionArgs": {
+    "projectName": "Arabently",
+    "projectPath": "C:\\Users\\Alaa M. Jaish\\Desktop\\Programming\\Agentic_JOURNEY\\Clients\\Arabently",
+    "testIds": [],
+    "additionalInstruction": "Please generate tests that can run in CI without real Supabase or Gemini credentials. Mock Supabase client/auth/session (including approval gating via profiles.is_approved). For /api/tts, mock global fetch to Google Generative Language API and assert error handling when GEMINI_API_KEY is missing and when upstream returns non-OK. Prefer testing Next.js route handlers directly when possible. Avoid tests that require manual admin approval; simulate approval state in mocks.",
+    "envs": {}
+  }
+}

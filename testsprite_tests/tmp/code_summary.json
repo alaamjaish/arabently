@@ -1,0 +1,146 @@
+{
+  "projectName": "Arabently",
+  "projectDescription": "A Saudi Arabic Learning Platform that teaches conversational Saudi Arabic through a guided 'Next Step' system with built-in spaced repetition. Students follow a structured learning path with lessons, scripts, and review sessions.",
+  "baseUrl": "http://localhost:3000",
+  "testUrl": "http://localhost:3000",
+  "techStack": {
+    "frontend": {
+      "framework": "Next.js 16.1",
+      "ui": "React 19",
+      "language": "TypeScript",
+      "styling": "Tailwind CSS 4",
+      "theming": "next-themes"
+    },
+    "backend": {
+      "type": "Next.js API Routes",
+      "authentication": "Supabase Auth",
+      "database": "PostgreSQL (via Supabase)",
+      "ai": "Google Gemini API (TTS)"
+    },
+    "deployment": "Vercel"
+  },
+  "features": [
+    {
+      "name": "User Authentication",
+      "description": "Email/password authentication with approval-based access control",
+      "type": "auth",
+      "pages": ["/login", "/signup", "/pending"]
+    },
+    {
+      "name": "Dashboard with Next Step System",
+      "description": "Main dashboard showing the current step in the learning roadmap with progress tracking",
+      "type": "frontend",
+      "pages": ["/dashboard"]
+    },
+    {
+      "name": "Course Management",
+      "description": "View courses, units, and lessons with a structured learning path",
+      "type": "frontend",
+      "pages": ["/course/[slug]"]
+    },
+    {
+      "name": "Lesson Viewer",
+      "description": "Video lesson pages with embedded content and TTS audio for Arabic text",
+      "type": "frontend",
+      "pages": ["/course/[slug]/lesson/[lessonId]"]
+    },
+    {
+      "name": "Script Listening Practice",
+      "description": "Audio script pages for listening comprehension with AI-generated Saudi dialect audio",
+      "type": "frontend",
+      "pages": ["/course/[slug]/script/[scriptId]"]
+    },
+    {
+      "name": "Text-to-Speech API",
+      "description": "API endpoint that uses Google Gemini TTS to generate Saudi Arabic dialect audio",
+      "type": "backend",
+      "endpoints": ["/api/tts"]
+    },
+    {
+      "name": "Progress Tracking",
+      "description": "Track student progress through roadmap steps with spaced repetition",
+      "type": "backend"
+    },
+    {
+      "name": "Theme Toggle",
+      "description": "Dark/Light mode support with warm Arabic-inspired color palette",
+      "type": "frontend"
+    }
+  ],
+  "dataModels": [
+    {
+      "name": "Profile",
+      "fields": ["id", "full_name", "is_approved", "approved_at", "created_at"]
+    },
+    {
+      "name": "Course",
+      "fields": ["id", "title", "title_ar", "slug", "description", "total_units", "is_published", "created_at"]
+    },
+    {
+      "name": "Unit",
+      "fields": ["id", "course_id", "unit_number", "title", "title_ar", "total_lessons"]
+    },
+    {
+      "name": "Lesson",
+      "fields": ["id", "unit_id", "lesson_number", "title", "title_ar", "video_urls", "content"]
+    },
+    {
+      "name": "Script",
+      "fields": ["id", "lesson_id", "title", "audio_url", "script_text", "type"]
+    },
+    {
+      "name": "RoadmapStep",
+      "fields": ["id", "course_id", "step_order", "step_type", "lesson_id", "script_id", "description"]
+    },
+    {
+      "name": "StudentProgress",
+      "fields": ["id", "user_id", "course_id", "current_step", "completed_steps", "started_at", "last_accessed"]
+    },
+    {
+      "name": "Enrollment",
+      "fields": ["id", "user_id", "course_id", "enrolled_at", "is_active"]
+    }
+  ],
+  "apiEndpoints": [
+    {
+      "path": "/api/tts",
+      "method": "POST",
+      "description": "Generate Saudi Arabic TTS audio using Google Gemini",
+      "params": ["text", "voice", "model"]
+    },
+    {
+      "path": "/api/tts",
+      "method": "GET",
+      "description": "Check TTS availability and available voices/models"
+    }
+  ],
+  "authentication": {
+    "provider": "Supabase Auth",
+    "flow": "Email/Password with approval",
+    "protectedRoutes": ["/dashboard", "/course/*"],
+    "publicRoutes": ["/", "/login", "/signup", "/pending"]
+  },
+  "keyComponents": [
+    {
+      "name": "InlineTTSPlayer",
+      "path": "src/components/InlineTTSPlayer.tsx",
+      "description": "Compact audio player for inline TTS playback"
+    },
+    {
+      "name": "TTSAudioPlayer",
+      "path": "src/components/TTSAudioPlayer.tsx",
+      "description": "Full audio player for script listening pages"
+    },
+    {
+      "name": "ThemeProvider",
+      "path": "src/components/ThemeProvider.tsx",
+      "description": "Theme context provider for dark/light mode"
+    },
+    {
+      "name": "ThemeToggle",
+      "path": "src/components/ThemeToggle.tsx",
+      "description": "Toggle button for switching themes"
+    }
+  ]
+}
+

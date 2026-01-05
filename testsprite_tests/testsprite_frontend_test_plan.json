@@ -1,0 +1,369 @@
+[
+  {
+    "id": "TC001",
+    "title": "User Signup and Approval Workflow",
+    "description": "Verify that a user can sign up with email and password, appears pending, and cannot access protected routes until approved.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to signup page"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid email and password and submit signup form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user receives a 'pending approval' message and account is created with is_approved = false"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to login before approval"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify login is denied for unapproved user"
+      },
+      {
+        "type": "action",
+        "description": "Admin approves user account"
+      },
+      {
+        "type": "action",
+        "description": "User logs in with approved credentials"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user can access protected routes such as dashboard"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Authentication and Access Control Enforcement",
+    "description": "Ensure protected routes cannot be accessed without authentication and approval, including API protections.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Attempt to access /dashboard without authentication"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify redirect to login page"
+      },
+      {
+        "type": "action",
+        "description": "Login with unapproved user and access /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access is denied or redirected to pending approval page"
+      },
+      {
+        "type": "action",
+        "description": "Login with approved user and access /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access granted"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Dashboard Loading and Next Step Display",
+    "description": "Verify that the dashboard loads within 2 seconds and displays the current learning step and progress accurately.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as approved user with existing progress"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify dashboard loads within 2 seconds"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the 'Next Step' system shows the correct learning activity and progress"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Next Step Navigation Flow",
+    "description": "Verify that clicking the primary CTA on dashboard starts the next learning step (lesson video or script) and updates progress after completion.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "From dashboard, click the Next Step CTA"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is navigated to the correct lesson or script page corresponding to next step"
+      },
+      {
+        "type": "action",
+        "description": "Complete the lesson or mark script as completed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify progress updates and dashboard shows the subsequent next step"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Spaced Repetition Scheduling for Review Steps",
+    "description": "Verify that completed steps are scheduled for review using the spaced repetition algorithm and that review steps appear at correct intervals.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Complete a lesson or script"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the step is marked complete in StudentProgress"
+      },
+      {
+        "type": "action",
+        "description": "Wait or simulate wait per spaced repetition schedule"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify review step is scheduled and prompted to user in subsequent sessions"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "TTS Audio Generation and Playback",
+    "description": "Verify that AI-generated Saudi dialect audio is generated via API and plays back correctly within 5 seconds on lesson and script pages.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to lesson page with embedded TTS audio"
+      },
+      {
+        "type": "action",
+        "description": "Trigger TTS audio playback (inline player or full player)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify TTS audio is generated and audio starts playing within 5 seconds with authentic Saudi dialect voice"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to script listening practice page"
+      },
+      {
+        "type": "action",
+        "description": "Play AI-generated audio from TTSAudioPlayer"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify audio plays smoothly and matches script text"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "API Endpoint TTS /api/tts POST Functionality",
+    "description": "Ensure the /api/tts POST endpoint successfully generates audio for valid inputs and returns correct error codes on invalid inputs.",
+    "category": "backend",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send POST request to /api/tts with valid text, voice, model parameters"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify response returns audio data within 5 seconds"
+      },
+      {
+        "type": "action",
+        "description": "Send POST request to /api/tts with missing or invalid parameters"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify response returns appropriate error code and message"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "API Endpoint TTS /api/tts GET Functionality",
+    "description": "Verify /api/tts GET returns current TTS availability and list of supported voices and models.",
+    "category": "backend",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send GET request to /api/tts"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify response returns availability status and arrays of available voices and models"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Progress Persistence and Accuracy",
+    "description": "Ensure that the user progress updates persist correctly in the database, including current step and completed steps, and reflect on dashboard.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Complete multiple learning steps in a session"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify progress data is saved correctly in StudentProgress database model"
+      },
+      {
+        "type": "action",
+        "description": "Logout and login again"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify dashboard reflects latest progress state accurately"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Learning Path Sequence Enforcement",
+    "description": "Verify that users cannot skip ahead or access steps out of order, enforcing the sequence of courses, units, lessons, and scripts per the roadmap.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Attempt to access a lesson or script beyond the current allowed step"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is redirected to correct next step or receives an access denied message"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Theme Toggle Functionality",
+    "description": "Verify that users can toggle between dark and light modes using the theme toggle and that the UI updates correctly with no glitches.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to any page with theme toggle (e.g., dashboard)"
+      },
+      {
+        "type": "action",
+        "description": "Click the theme toggle button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI switches to the opposite theme with correct Arabic-inspired warm colors"
+      },
+      {
+        "type": "action",
+        "description": "Toggle again"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI switches back to original theme without UI glitches"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Responsive Design Across Devices",
+    "description": "Verify that the platform UI and all components are responsive and function correctly on mobile, tablet, and desktop screen sizes.",
+    "category": "ui",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access the platform on a variety of devices (mobile, tablet, desktop) or simulate with different viewport sizes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all pages, navigation, and interactive elements render correctly and remain usable"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Audio Player Cross-Browser Compatibility",
+    "description": "Test that inline and full audio players play and control AI-generated audio correctly across all supported browsers and devices.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "On lesson or script pages, play TTS audio using InlineTTSPlayer and TTSAudioPlayer on different browsers (Chrome, Firefox, Safari, Edge)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify audio plays smoothly without errors or crashes, and controls (play, pause, seek) function correctly"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Error Handling for Unavailable TTS Service",
+    "description": "Verify the system properly handles errors when the TTS API is unavailable, including user notifications and fallback behavior.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Simulate TTS API downtime or failure"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to play TTS audio"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user receives an appropriate error message and UI handles failure gracefully without crashing"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "UI Performance Under Load",
+    "description": "Verify the dashboard and core UI components load and remain responsive under high user load conditions.",
+    "category": "performance",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Simulate multiple concurrent users accessing dashboard and lesson pages"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify dashboard loads within 2 seconds and UI interactions remain responsive without errors"
+      }
+    ]
+  }
+]

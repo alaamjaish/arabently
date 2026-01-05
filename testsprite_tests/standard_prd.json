@@ -1,0 +1,280 @@
+{
+  "meta": {
+    "project": "Arabently",
+    "date": "2025-12-30",
+    "prepared_by": "Arabently Team"
+  },
+  "product_overview": "Arabently is a Saudi Arabic learning platform designed to teach conversational Saudi Arabic through a structured \"Next Step\" learning system with built-in spaced repetition and authentic AI-generated audio in the Saudi dialect. It offers a clear, guided path across lessons and listening scripts to ensure consistent progress and retention.",
+  "core_goals": [
+    "Provide a focused learning experience exclusively in the Saudi Arabic dialect.",
+    "Eliminate user decision fatigue by guiding learners through a predetermined learning roadmap.",
+    "Automate review sessions using spaced repetition to enhance retention.",
+    "Deliver authentic, AI-generated Saudi dialect audio using Google Gemini TTS.",
+    "Track student progress comprehensively and provide a user-friendly dashboard.",
+    "Support bilingual interface and cultural authenticity with an Arabic-inspired design."
+  ],
+  "key_features": [
+    "User authentication with email/password and approval-based access control.",
+    "Dashboard featuring the 'Next Step' system showing the current learning activity and progress.",
+    "Structured course management with units, lessons, and scripts mapped in a clear learning path.",
+    "Lesson viewer with embedded videos and AI-generated TTS audio playback.",
+    "Audio script listening practice with authentic Saudi dialect AI-generated voices.",
+    "Backend API integration with Google Gemini TTS for on-demand audio generation.",
+    "Progress tracking with spaced repetition to schedule reviews automatically.",
+    "Dark and light theme toggle with warm Arabic-inspired color palettes.",
+    "Responsive design optimized for mobile devices.",
+    "Inline and full audio players for TTS audio playback."
+  ],
+  "user_flow_summary": [
+    "User visits landing page and signs up with email/password, then waits for approval.",
+    "Upon approval, user logs in and accesses the dashboard displaying the next learning step.",
+    "User clicks the single clear CTA to start the next step: either a lesson video or a script listening activity.",
+    "User completes the step, marking progress which updates the dashboard with the subsequent next step.",
+    "System schedules review steps to reinforce learning via spaced repetition algorithm.",
+    "User interacts with AI-generated Saudi dialect audio throughout lessons and scripts.",
+    "User toggles theme between dark and light modes as preferred.",
+    "User repeats daily learning sessions following the streamlined single-action flow."
+  ],
+  "validation_criteria": [
+    "Dashboard loads within 2 seconds and correctly reflects user's current progress and next step.",
+    "TTS audio generates and plays within 5 seconds with authentic Saudi dialect pronunciation.",
+    "Authentication flow enforces approval before accessing protected routes.",
+    "All major user flows complete with ≤ 1 click to the next activity.",
+    "Responsive UI works seamlessly across mobile, tablet, and desktop devices.",
+    "Audio components function correctly on all supported browsers and devices.",
+    "User progress persistence is accurate and up to date in the database.",
+    "Theme toggle correctly switches between dark and light modes without UI glitches.",
+    "API endpoints respond with appropriate status codes and error handling for edge cases.",
+    "The learning path enforces the order of activities to prevent navigation inconsistency."
+  ],
+  "code_summary": {
+    "projectName": "Arabently",
+    "projectDescription": "A Saudi Arabic Learning Platform that teaches conversational Saudi Arabic through a guided 'Next Step' system with built-in spaced repetition. Students follow a structured learning path with lessons, scripts, and review sessions.",
+    "baseUrl": "http://localhost:3000",
+    "testUrl": "http://localhost:3000",
+    "techStack": {
+      "frontend": {
+        "framework": "Next.js 16.1",
+        "ui": "React 19",
+        "language": "TypeScript",
+        "styling": "Tailwind CSS 4",
+        "theming": "next-themes"
+      },
+      "backend": {
+        "type": "Next.js API Routes",
+        "authentication": "Supabase Auth",
+        "database": "PostgreSQL (via Supabase)",
+        "ai": "Google Gemini API (TTS)"
+      },
+      "deployment": "Vercel"
+    },
+    "features": [
+      {
+        "name": "User Authentication",
+        "description": "Email/password authentication with approval-based access control",
+        "type": "auth",
+        "pages": [
+          "/login",
+          "/signup",
+          "/pending"
+        ]
+      },
+      {
+        "name": "Dashboard with Next Step System",
+        "description": "Main dashboard showing the current step in the learning roadmap with progress tracking",
+        "type": "frontend",
+        "pages": [
+          "/dashboard"
+        ]
+      },
+      {
+        "name": "Course Management",
+        "description": "View courses, units, and lessons with a structured learning path",
+        "type": "frontend",
+        "pages": [
+          "/course/[slug]"
+        ]
+      },
+      {
+        "name": "Lesson Viewer",
+        "description": "Video lesson pages with embedded content and TTS audio for Arabic text",
+        "type": "frontend",
+        "pages": [
+          "/course/[slug]/lesson/[lessonId]"
+        ]
+      },
+      {
+        "name": "Script Listening Practice",
+        "description": "Audio script pages for listening comprehension with AI-generated Saudi dialect audio",
+        "type": "frontend",
+        "pages": [
+          "/course/[slug]/script/[scriptId]"
+        ]
+      },
+      {
+        "name": "Text-to-Speech API",
+        "description": "API endpoint that uses Google Gemini TTS to generate Saudi Arabic dialect audio",
+        "type": "backend",
+        "endpoints": [
+          "/api/tts"
+        ]
+      },
+      {
+        "name": "Progress Tracking",
+        "description": "Track student progress through roadmap steps with spaced repetition",
+        "type": "backend"
+      },
+      {
+        "name": "Theme Toggle",
+        "description": "Dark/Light mode support with warm Arabic-inspired color palette",
+        "type": "frontend"
+      }
+    ],
+    "dataModels": [
+      {
+        "name": "Profile",
+        "fields": [
+          "id",
+          "full_name",
+          "is_approved",
+          "approved_at",
+          "created_at"
+        ]
+      },
+      {
+        "name": "Course",
+        "fields": [
+          "id",
+          "title",
+          "title_ar",
+          "slug",
+          "description",
+          "total_units",
+          "is_published",
+          "created_at"
+        ]
+      },
+      {
+        "name": "Unit",
+        "fields": [
+          "id",
+          "course_id",
+          "unit_number",
+          "title",
+          "title_ar",
+          "total_lessons"
+        ]
+      },
+      {
+        "name": "Lesson",
+        "fields": [
+          "id",
+          "unit_id",
+          "lesson_number",
+          "title",
+          "title_ar",
+          "video_urls",
+          "content"
+        ]
+      },
+      {
+        "name": "Script",
+        "fields": [
+          "id",
+          "lesson_id",
+          "title",
+          "audio_url",
+          "script_text",
+          "type"
+        ]
+      },
+      {
+        "name": "RoadmapStep",
+        "fields": [
+          "id",
+          "course_id",
+          "step_order",
+          "step_type",
+          "lesson_id",
+          "script_id",
+          "description"
+        ]
+      },
+      {
+        "name": "StudentProgress",
+        "fields": [
+          "id",
+          "user_id",
+          "course_id",
+          "current_step",
+          "completed_steps",
+          "started_at",
+          "last_accessed"
+        ]
+      },
+      {
+        "name": "Enrollment",
+        "fields": [
+          "id",
+          "user_id",
+          "course_id",
+          "enrolled_at",
+          "is_active"
+        ]
+      }
+    ],
+    "apiEndpoints": [
+      {
+        "path": "/api/tts",
+        "method": "POST",
+        "description": "Generate Saudi Arabic TTS audio using Google Gemini",
+        "params": [
+          "text",
+          "voice",
+          "model"
+        ]
+      },
+      {
+        "path": "/api/tts",
+        "method": "GET",
+        "description": "Check TTS availability and available voices/models"
+      }
+    ],
+    "authentication": {
+      "provider": "Supabase Auth",
+      "flow": "Email/Password with approval",
+      "protectedRoutes": [
+        "/dashboard",
+        "/course/*"
+      ],
+      "publicRoutes": [
+        "/",
+        "/login",
+        "/signup",
+        "/pending"
+      ]
+    },
+    "keyComponents": [
+      {
+        "name": "InlineTTSPlayer",
+        "path": "src/components/InlineTTSPlayer.tsx",
+        "description": "Compact audio player for inline TTS playback"
+      },
+      {
+        "name": "TTSAudioPlayer",
+        "path": "src/components/TTSAudioPlayer.tsx",
+        "description": "Full audio player for script listening pages"
+      },
+      {
+        "name": "ThemeProvider",
+        "path": "src/components/ThemeProvider.tsx",
+        "description": "Theme context provider for dark/light mode"
+      },
+      {
+        "name": "ThemeToggle",
+        "path": "src/components/ThemeToggle.tsx",
+        "description": "Toggle button for switching themes"
+      }
+    ]
+  }
+}
